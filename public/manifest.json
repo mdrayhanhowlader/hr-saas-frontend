@@ -1,0 +1,14 @@
+{
+  "name": "HR Management System",
+  "short_name": "HR System",
+  "description": "Complete HR Management Software",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#F5F5F7",
+  "theme_color": "#0066CC",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable any" }
+  ]
+}
