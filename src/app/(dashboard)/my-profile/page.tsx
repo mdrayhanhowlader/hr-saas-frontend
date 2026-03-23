@@ -22,7 +22,7 @@ export default function MyProfilePage() {
   const [leaveForm, setLeaveForm] = useState({ leaveTypeId: '', startDate: '', endDate: '', reason: '' });
 
   useEffect(() => {
-    api.get('/auth/me').then(res => setProfile(res.data.data)).catch(() {}).finally(() => setLoading(false));
+    api.get('/auth/me').then(res => setProfile(res.data.data)).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
