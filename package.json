@@ -36,6 +36,7 @@
     "canvas": "^3.2.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
