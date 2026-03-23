@@ -56,7 +56,7 @@ export default function HolidaysPage() {
     setImportLoading(true);
     try {
       const res = await api.post(`/holidays/import?year=${year}`);
-      alert(`✓ ${res.data.message}`);
+      alert(res.data.message);
       fetchHolidays();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed');
@@ -67,7 +67,6 @@ export default function HolidaysPage() {
     public: { bg: 'var(--danger-bg)', color: 'var(--danger)', label: 'Public' },
     optional: { bg: 'var(--warning-bg)', color: 'var(--warning)', label: 'Optional' },
     company: { bg: 'var(--accent-subtle)', color: 'var(--accent)', label: 'Company' },
-    weekend: { bg: 'rgba(100,100,100,0.1)', color: 'var(--text-secondary)', label: 'Weekend' },
   };
 
   const getDaysInMonth = (y: number, m: number) => new Date(y, m + 1, 0).getDate();
@@ -97,17 +96,17 @@ export default function HolidaysPage() {
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <select value={year} onChange={e => setYear(Number(e.target.value))} style={{ padding: '9px 12px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', fontSize: '13px', outline: 'none', cursor: 'pointer' }}>
-            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y} style={{ background: '#111' }}>{y}</option>)}
+            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y} style={{ background: 'var(--bg-card)' }}>{y}</option>)}
           </select>
           {isAdmin && (
-            <>
-              <button onClick={handleImport} disabled={importLoading} style={{ padding: '9px 14px', background: 'var(--bg-card)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--text-secondary)', fontSize: '13px', cursor: 'pointer' }}>
-                {importLoading ? '...' : '📥 Import BD Holidays'}
-              </button>
-              <button onClick={() => setShowModal(true)} style={{ padding: '9px 16px', background: 'var(--accent)', color: 'white', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', boxShadow: 'var(--shadow-glow)' }}>
-                + Add Holiday
-              </button>
-            </>
+            <button onClick={handleImport} disabled={importLoading} style={{ padding: '9px 14px', background: 'var(--bg-card)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', color: 'var(--text-secondary)', fontSize: '13px', cursor: 'pointer' }}>
+              {importLoading ? '...' : '📥 Import BD Holidays'}
+            </button>
+          )}
+          {isAdmin && (
+            <button onClick={() => setShowModal(true)} style={{ padding: '9px 16px', background: 'var(--accent)', color: 'white', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
+              + Add Holiday
+            </button>
           )}
         </div>
       </div>
@@ -132,20 +131,16 @@ export default function HolidaysPage() {
                 if (!day) return <div key={i} />;
                 const isToday = today.getDate() === day && today.getMonth() === viewMonth && today.getFullYear() === year;
                 const isHoliday = holidayDates.has(day);
-                const isSunday = new Date(year, viewMonth, day).getDay() === 0;
                 const isFriday = new Date(year, viewMonth, day).getDay() === 5;
+                const isSunday = new Date(year, viewMonth, day).getDay() === 0;
                 const holiday = monthHolidays.find(h => new Date(h.date).getDate() === day);
-
                 return (
                   <div key={i} style={{
                     textAlign: 'center', padding: '8px 4px', borderRadius: '8px',
                     background: isToday ? 'var(--accent)' : isHoliday ? 'var(--danger-bg)' : isFriday || isSunday ? 'rgba(100,100,100,0.08)' : 'transparent',
                     border: isHoliday ? '1px solid rgba(255,69,58,0.2)' : '1px solid transparent',
                     cursor: 'default',
-                    position: 'relative',
-                  }}
-                  title={holiday?.name || (isFriday ? 'Friday' : isSunday ? 'Sunday' : '')}
-                  >
+                  }} title={holiday?.name || ''}>
                     <span style={{
                       fontSize: '13px', fontWeight: isToday || isHoliday ? '600' : '400',
                       color: isToday ? 'white' : isHoliday ? 'var(--danger)' : isFriday || isSunday ? 'var(--text-tertiary)' : 'var(--text-primary)',
@@ -173,7 +168,7 @@ export default function HolidaysPage() {
           <div style={{ marginTop: '12px', display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
             {MONTHS.map((m, i) => (
               <button key={m} onClick={() => setViewMonth(i)} style={{
-                padding: '6px 12px', borderRadius: 'var(--radius-sm)', border: 'none', fontSize: '12px',
+                padding: '6px 12px', borderRadius: 'var(--radius-sm)', fontSize: '12px',
                 background: viewMonth === i ? 'var(--accent-subtle)' : 'var(--bg-card)',
                 color: viewMonth === i ? 'var(--accent)' : 'var(--text-secondary)',
                 border: `1px solid ${viewMonth === i ? 'rgba(41,151,255,0.2)' : 'var(--border)'}`,
@@ -186,7 +181,7 @@ export default function HolidaysPage() {
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: 'fit-content' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
             <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>
-              {MONTH_FULL[viewMonth]} Holidays ({monthHolidays.length})
+              {MONTH_FULL[viewMonth]} ({monthHolidays.length})
             </h3>
           </div>
           {loading ? (
@@ -203,9 +198,7 @@ export default function HolidaysPage() {
                     onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                   >
                     <div style={{ width: '36px', height: '36px', borderRadius: '9px', background: ts.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <span style={{ fontSize: '13px', fontWeight: '700', color: ts.color }}>
-                        {new Date(h.date).getDate()}
-                      </span>
+                      <span style={{ fontSize: '13px', fontWeight: '700', color: ts.color }}>{new Date(h.date).getDate()}</span>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.name}</div>
@@ -214,7 +207,7 @@ export default function HolidaysPage() {
                       </div>
                     </div>
                     {isAdmin && (
-                      <button onClick={() => handleDelete(h.id)} style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '4px', borderRadius: '6px', transition: 'color 0.15s', flexShrink: 0 }}
+                      <button onClick={() => handleDelete(h.id)} style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '4px', borderRadius: '6px', flexShrink: 0 }}
                         onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--danger)'}
                         onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)'}
                       >
@@ -224,13 +217,6 @@ export default function HolidaysPage() {
                   </div>
                 );
               })}
-            </div>
-          )}
-
-          {holidays.length > 0 && (
-            <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>All {year} Holidays</div>
-              <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>{holidays.length} total</div>
             </div>
           )}
         </div>
@@ -256,11 +242,7 @@ export default function HolidaysPage() {
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '7px' }}>Type</label>
                 <div style={{ display: 'flex', gap: '8px' }}>
-                  {[
-                    { value: 'public', label: 'Public' },
-                    { value: 'optional', label: 'Optional' },
-                    { value: 'company', label: 'Company' },
-                  ].map(t => (
+                  {[{ value: 'public', label: 'Public' }, { value: 'optional', label: 'Optional' }, { value: 'company', label: 'Company' }].map(t => (
                     <button key={t.value} type="button" onClick={() => setForm({ ...form, type: t.value })} style={{
                       flex: 1, padding: '8px', borderRadius: 'var(--radius-sm)',
                       border: `1px solid ${form.type === t.value ? 'var(--accent)' : 'var(--border)'}`,
